@@ -1,0 +1,221 @@
+# Imports
+import discord
+import random
+import os
+import aiohttp
+import datetime 
+import requests;
+import json;
+import asyncio
+from discord.ext import commands
+
+# Base Vars
+client = commands.Bot (command_prefix = '.')
+rand_choice = random.choice
+@client.remove_command ("help")
+
+# On ready
+@client.event
+async def on_ready():
+  print("Streaming Time!") 
+  await client.change_presence(activity = discord.Streaming(name = ".help", url = "https://twitch.tv/sneaksishere"))
+
+# Help
+@client.command()
+async def help (ctx):             
+    await ctx.send("Help")
+    
+# Wanted (Image Manipulation)
+
+from PIL import Image
+from io import BytesIO
+
+
+
+
+@client.command()
+async def wanted(ctx, user: discord.Member = None):
+  if user == None:
+    user = ctx.author
+
+    wanted = Image.open("wanted.jpg")
+
+    asset = ctx.author.avatar_url_as(size = 128)
+    data = BytesIO(await asset.read())
+    pfp = Image.open(data)
+
+    pfp = pfp.resize((177,177))
+
+    wanted.paste(pfp, (120,212))
+
+    wanted.save("profile.jpg")
+
+    await ctx.send(file = discord.File("profile.jpg"))
+
+
+    
+#                    #
+#        Fun         #
+#                    #
+
+def get_quote():
+  response = requests.get("https://zenquotes.io/api/random")
+  json_data = json.loads(response.text)
+  quote = json_data[0]['q'] + " - " + json_data[0]['a']
+  return(quote)
+  
+@client.command()
+async def inspire(ctx):
+    quote = get_quote()
+    await ctx.message.channel.send(quote)
+
+@client.command()
+async def ping (ctx):             
+    await ctx.send(f'Pong! Your ping is {round (client.latency * 1000)}ms!'f'')
+
+
+@client.command()
+async def devs (ctx):             
+    await ctx.send('**💻 Developers ⚒️** \n \n **Main Developer** \n Mainly Developed By sneaks#6969 \n \n **Helpers** \n Krewposter#7339 \n Anirudh#2414 \n **Extra Resources** \n Emojis - Emoji.gg, Pepe World (https://discord.gg/J7C7HHN8Uf)')
+
+@client.command(pass_context=True)
+async def meme(ctx):
+    embed = discord.Embed(title="Memes", description="Powered By r/cleanmemes")
+
+    async with aiohttp.ClientSession() as cs:
+        async with cs.get('https://www.reddit.com/r/cleanmemes/new.json?sort=hot') as r:
+            res = await r.json()
+            embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
+            await ctx.send(embed=embed)
+
+@client.command()
+async def hack(ctx):
+  message = await ctx.send("<a:heck:923125821202378792> Hacking now...")
+  await asyncio.sleep(1)
+  await message.edit(content="<a:pepeparty:923126660964945920> Bypassing Security Measures")
+  await asyncio.sleep(2)
+  await message.edit(content=":envelope: Email: `UWUANIMELOVER69@gmail.com` \n:lock: Password: `KewpastaSenpai`")
+  await asyncio.sleep(4)
+  await message.edit(content="Ip Adress Found! `273.83.474.831`")  
+  await asyncio.sleep(2)
+  await message.edit(content="Selling Data On The Dark Web <:peperondo:923126912308629545>")
+  await asyncio.sleep(4)
+  await message.edit(content=":white_check_mark: Data Has Been Bought By `UnknownUser39492` For 10,000 Dollars")
+  await asyncio.sleep(4)
+  await message.edit(content=":link: Wiring Money...")
+  await asyncio.sleep(4)
+  await message.edit(content=":white_check_mark: `Money Has Been Sucessfully Transferred To 4321 5678 9012 3421 - International Bank Of Money`")
+  await asyncio.sleep(4)
+  await message.edit(content=":computer: Acsessing Devices...")
+  await asyncio.sleep(4)
+  await message.edit(content=":white_check_mark: Acsessed Camera, Showing View...")
+  await asyncio.sleep(4)
+  await message.edit(content="https://images-ext-1.discordapp.net/external/TkjMHbKJViWCVxMeynnqVnhmaveA7Tt-HXjXNEVgAMM/https/media.tenor.co/images/54d080533d26a1be942664a4d6327dde/tenor.png?width=600&amp;height=600")
+  await asyncio.sleep(4)
+  await message.edit(content="This **Totally** Real And Dangerous Hack Is Done :smirk:")
+
+
+@client.command(aliases=['8ball', 'test'])
+async def _8ball(ctx, *, question):
+  responses = ['It is certain.',
+               'It is decidedly so.',
+               'Without a doubt',
+               'Yes - definately', 
+               'You may rely on it.',
+               'As I see it, yes',
+               'Most likely',
+               'My sources would say otherwise', 'I would disagree with that...',
+               'Cannot predict now',
+               'My reply is no',
+               'Outlook not so good',
+               'Im Doubtful', ]
+  await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
+  print('8ball')
+
+@client.command()
+async def timer(self, ctx, timeInput):
+    try:
+        try:
+            time = int(timeInput)
+        except:
+            convertTimeList = {'s':1, 'm':60, 'h':3600, 'd':86400, 'S':1, 'M':60, 'H':3600, 'D':86400}
+            time = int(timeInput[:-1]) * convertTimeList[timeInput[-1]]
+        if time > 86400:
+            await ctx.send("I can\'t do timers over a day long")
+            return
+        if time <= 0:
+            await ctx.send("Timers don\'t go into negatives :/")
+            return
+        if time >= 3600:
+            message = await ctx.send(f"Timer: {time//3600} hours {time%3600//60} minutes {time%60} seconds")
+        elif time >= 60:
+            message = await ctx.send(f"Timer: {time//60} minutes {time%60} seconds")
+        elif time < 60:
+            message = await ctx.send(f"Timer: {time} seconds")
+        while True:
+            try:
+                await asyncio.sleep(5)
+                time -= 5
+                if time >= 3600:
+                    await message.edit(content=f"Timer: {time//3600} hours {time %3600//60} minutes {time%60} seconds")
+                elif time >= 60:
+                    await message.edit(content=f"Timer: {time//60} minutes {time%60} seconds")
+                elif time < 60:
+                    await message.edit(content=f"Timer: {time} seconds")
+                if time <= 0:
+                    await message.edit(content="Ended!")
+                    await ctx.send(f"{ctx.author.mention} Your countdown Has ended!")
+                    break
+            except:
+                break
+    except:
+        await ctx.send(f"Alright, first you gotta let me know how I\'m gonna time **{timeInput}**....")
+
+#                    #
+#       Music        #     
+#                    #
+
+#                    #
+#     Moderation     #
+#                    # 
+
+@client.command()
+async def clear(ctx, amount=0):
+  if (ctx.message.author.permissions_in(ctx.message.channel).manage_messages):
+      await ctx.channel.purge(limit= amount+1)
+  else:
+
+      await ctx.send("❌ You Do Not Have Permission To Remove")
+
+@client.command()
+async def kick(ctx, member : discord.Member, *, reason= "None"):
+  if (ctx.message.author.permissions_in(ctx.message.channel).kick_members):
+      await member.kick(reason=reason)
+      await ctx.send(f'💥 {member} was kicked by {ctx.author.mention}, \n Reason given: {reason}')
+
+  else:
+      await ctx.send("❌ You Do Not Have Permission To Kick")
+
+@client.command()  
+async def ban(ctx, member : discord.Member, *, reason= "None"):
+    if (ctx.message.author.permissions_in(ctx.message.channel).ban_members):
+        await member.ban(reason=reason)
+        await ctx.send(f'💥 {member} was banned by {ctx.author.mention}, \n Reason given: {reason}')
+    else:
+        await ctx.send("❌ You Do Not Have Permission To Ban.")
+    print('Ban')
+
+@client.command(pass_context = True)
+async def mute(ctx, member: discord.Member):
+     if ctx.message.author.server_permissions.administrator:
+        role = discord.utils.get(member.server.roles, name='Muted')
+        await ctx.add_roles(member, role)
+        embed=discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0xff00f6)
+        await ctx.send(embed=embed)
+     else:
+        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0xff00f6)
+        await ctx.send(embed=embed)
+
+
+mySecret = os.environ['TOKEN']
+client.run(mySecret)
